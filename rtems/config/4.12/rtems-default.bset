@@ -12,6 +12,8 @@
 devel/expat-2.1.0-1
 tools/rtems-binutils-2.29-1
 tools/rtems-gcc-7.1.0-newlib-2.5.0.20170623-1
-tools/rtems-gdb-7.12-1
+%if %{_build_os} != darwin
+  tools/rtems-gdb-7.12-1
+%endif
 tools/rtems-tools-4.12-1
 tools/rtems-kernel-4.12
