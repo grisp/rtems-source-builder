@@ -1,0 +1,35 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: GRiSP Toolchain <noreply@example.com>
+Date: Fri, 3 Apr 2026 10:00:00 +0000
+Subject: [PATCH] arm/rtems: add ARMv7-A NEON hard-float multilib in ARM mode
+
+The current RTEMS ARM multilib requirements include Thumb variants for
+ARMv7-A NEON hard-float, but not the corresponding ARM-mode variant.
+As a result, builds using:
+
+  -march=armv7-a -marm -mfpu=neon -mfloat-abi=hard
+
+fall back to the default multilib and can fail at link time with ABI
+mismatches (for example, VFP register argument tagging conflicts).
+
+Require the ARM-mode armv7-a/neon/hard multilib so BSPs and projects can
+link correctly in ARM mode.
+---
+ gcc/config/arm/t-rtems | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/gcc/config/arm/t-rtems b/gcc/config/arm/t-rtems
+index 2dbd8725c26..c6e2ea9cb96 100644
+--- a/gcc/config/arm/t-rtems
++++ b/gcc/config/arm/t-rtems
+@@ -11,6 +11,7 @@ MULTILIB_REQUIRED =
+ MULTILIB_REQUIRED += mbig-endian/mthumb/march=armv7-r/mfpu=vfpv3-d16/mfloat-abi=hard
+ MULTILIB_REQUIRED += mbig-endian/mthumb/march=armv7-r
+ MULTILIB_REQUIRED += mfpu=vfp/mfloat-abi=hard
++MULTILIB_REQUIRED += march=armv7-a/mfpu=neon/mfloat-abi=hard
+ MULTILIB_REQUIRED += mthumb/march=armv6-m
+ MULTILIB_REQUIRED += mthumb/march=armv7-a/mfpu=neon/mfloat-abi=hard
+ MULTILIB_REQUIRED += mthumb/march=armv7-a
+-- 
+2.39.5 (Apple Git-154)
+

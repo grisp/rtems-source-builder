@@ -1,6 +1,13 @@
 *~
 sources
 patches
+!patches/
+patches/*
+!patches/gcc-7.5.0-arm-rtems-multilib-armv7a-neon-hard.patch
+!patches/gcc-7.5.0-zlib-darwin-fdopen.patch
+!patches/gcc-7.5.0-darwin-arm64-host-hooks.patch
+!patches/gdb-9.1-zlib-darwin-fdopen.patch
+!patches/binutils-2.34-zlib-darwin-fdopen.patch
 tar
 build
 *.txt
