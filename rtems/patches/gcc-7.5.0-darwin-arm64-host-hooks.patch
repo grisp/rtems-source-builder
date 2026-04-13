@@ -1,0 +1,13 @@
+--- a/gcc/config.host
++++ b/gcc/config.host
+@@ -249,6 +249,10 @@ case ${host} in
+     out_host_hook_obj=host-mingw32.o
+     host_lto_plugin_soname=liblto_plugin-0.dll
+     ;;
++  aarch64*-*-darwin* | arm64*-*-darwin*)
++    # Generic Darwin host hooks need host-default.o to define host_hooks.
++    out_host_hook_obj="${out_host_hook_obj} host-default.o"
++    ;;
+   i[34567]86-*-darwin* | x86_64-*-darwin*)
+     out_host_hook_obj="${out_host_hook_obj} host-i386-darwin.o"
+     host_xmake_file="${host_xmake_file} i386/x-darwin"
