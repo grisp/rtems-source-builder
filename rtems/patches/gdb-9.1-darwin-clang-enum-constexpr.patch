@@ -1,0 +1,12 @@
+--- a/gdb/gdbsupport/enum-flags.h
++++ b/gdb/gdbsupport/enum-flags.h
+@@ -82,8 +82,7 @@ template<> struct integer_for_size<8, 1> { typedef int64_t type; };
+ template<typename T>
+ struct enum_underlying_type
+ {
+-  typedef typename
+-    integer_for_size<sizeof (T), static_cast<bool>(T (-1) < T (0))>::type
++  typedef typename std::underlying_type<T>::type
+     type;
+ };
+ 
