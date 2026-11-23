@@ -12,9 +12,10 @@
 #
 # Build gdb first to raise the Python install error as early as possible.
 # GDB needs expat so it needs to be built before.
+# Use a recent expat: the host Python library may require APIs added in 2.6.0.
 #
 
-devel/expat-2.1.0-1
+devel/expat-2.10.0-1
 tools/rtems-gdb-9.1-1
 
 tools/rtems-binutils-2.34

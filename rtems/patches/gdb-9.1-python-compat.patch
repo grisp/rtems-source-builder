@@ -1,0 +1,47 @@
+GDB 9.1 clears the current thread state before releasing the GIL.  Python 3.12
+requires that state to release the interpreter's lock, so use the supported
+API that releases the GIL and clears the state together.
+Also acquire the GIL when checking Python's interrupt flag from GDB code.
+Avoid Python calls after finalization and replace the removed imp module.
+
+--- a/gdb/python/python.c
++++ b/gdb/python/python.c
+@@ -248,7 +248,13 @@
+ static int
+ gdbpy_check_quit_flag (const struct extension_language_defn *extlang)
+ {
+-  return PyOS_InterruptOccurred ();
++  if (!Py_IsInitialized ())
++    return 0;
++
++  PyGILState_STATE state = PyGILState_Ensure ();
++  int result = PyOS_InterruptOccurred ();
++  PyGILState_Release (state);
++  return result;
+ }
+ 
+ /* Evaluate a Python command like PyRun_SimpleString, but uses
+@@ -1723,8 +1729,7 @@
+     return false;
+ 
+   /* Release the GIL while gdb runs.  */
+-  PyThreadState_Swap (NULL);
+-  PyEval_ReleaseLock ();
++  PyEval_SaveThread ();
+ 
+   make_final_cleanup (finalize_python, NULL);
+ 
+--- a/gdb/python/lib/gdb/__init__.py
++++ b/gdb/python/lib/gdb/__init__.py
+@@ -20,7 +20,10 @@
+ 
+ if sys.version_info[0] > 2:
+     # Python 3 moved "reload"
+-    from imp import reload
++    try:
++        from importlib import reload
++    except ImportError:
++        from imp import reload
+ 
+ from _gdb import *
+ 
